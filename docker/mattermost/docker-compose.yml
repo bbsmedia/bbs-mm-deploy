@@ -1,0 +1,65 @@
+version: "2.4"
+
+services:
+  postgres:
+    image: postgres:${PG_IMAGE_TAG}
+    container_name: ${PG_CONTAINER_NAME}
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - ${PG_DATA_PATH}:/var/lib/postgresql/data
+      - ${PG_DUMP_TRANSFER_PATH}:${PG_CONTAINER_RESTORE_PATH}
+    environment:
+      # timezone inside container
+      - TZ="$TZ"
+      # necessary Postgres options/variables
+      - POSTGRES_USER="$PG_USER"
+      - POSTGRES_PASSWORD="$PG_PASSWORD"
+      - POSTGRES_DB="$PG_DB"
+
+  mattermost:
+    depends_on:
+      - postgres
+    image: "mattermost/${MM_IMAGE}:${MM_IMAGE_TAG}"
+    container_name: "${MM_CONTAINER_NAME}"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    ports:
+      - ${APP_PORT}:8065
+      - ${CALLS_PORT}:${CALLS_PORT}/udp
+      - ${CALLS_PORT}:${CALLS_PORT}/tcp
+    read_only: false
+    tmpfs:
+      - /tmp
+    volumes:
+      - ${MM_CONFIG_PATH}:/mattermost/config:rw
+      - ${MM_DATA_PATH}:/mattermost/data:rw
+      - ${MM_LOGS_PATH}:/mattermost/logs:rw
+      - ${MM_PLUGINS_PATH}:/mattermost/plugins:rw
+      - ${MM_CLIENT_PLUGINS_PATH}:/mattermost/client/plugins:rw
+      - ${MM_BLEVE_INDEXES_PATH}:/mattermost/bleve-indexes:rw
+      # When you want to use SSO with GitLab, you have to add the cert pki chain of GitLab inside Alpine
+      # to avoid Token request failed: certificate signed by unknown authority 
+      # (link: https://github.com/mattermost/mattermost-server/issues/13059 and https://github.com/mattermost/docker/issues/34)
+      # - ${GITLAB_PKI_CHAIN_PATH}:/etc/ssl/certs/pki_chain.pem:ro
+    environment:
+      # timezone inside container
+      - TZ="${TZ}"
+
+      # necessary Mattermost options/variables (see env.example)
+      - MM_SQLSETTINGS_DRIVERNAME="${MM_SQLSETTINGS_DRIVERNAME}"
+      - MM_SQLSETTINGS_DATASOURCE="${MM_SQLSETTINGS_DATASOURCE}"
+
+      # necessary for bleve
+      - MM_BLEVESETTINGS_INDEXDIR="${MM_BLEVESETTINGS_INDEXDIR}"
+
+      # additional settings
+      - MM_SERVICESETTINGS_SITEURL="https://${DOMAIN}"

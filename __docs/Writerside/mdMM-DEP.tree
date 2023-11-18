@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="mdMM-DEP"
+                 name="Mattermost deployment"
+                 start-page="starter-topic.md">
+
+    <toc-element topic="starter-topic.md"/>
+    <toc-element topic="Scripts.md">
+        <toc-element topic="kill-script.md"/>
+        <toc-element topic="Helper-functions.md"/>
+    </toc-element>
+    <toc-element topic="Light-house-option.md"/>
+    <toc-element topic="Readonly-container.md"/>
+    <toc-element topic="Timezone.md"/>
+</instance-profile>
