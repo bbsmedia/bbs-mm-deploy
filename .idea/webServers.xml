@@ -9,6 +9,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="7f8ef1b5-45ed-4615-bffe-b55047b9689f" name="bunker" url="http://ftp.bbs.media">
+        <fileTransfer accessType="FTPS" host="ftp.bbs.media" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
