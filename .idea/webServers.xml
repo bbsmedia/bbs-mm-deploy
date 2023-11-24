@@ -3,7 +3,14 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="4fde970a-ebf5-4ddc-92a5-a599b757a5e0" name="chat.bbs.media">
-        <fileTransfer rootFolder="/home/webadmin/docker" accessType="SFTP" host="chat.bbs.media" port="22100" sshConfigId="fcceb1e6-6b9b-44b8-a0df-964e022d46a2" sshConfig="mm-deploy" authAgent="true">
+        <fileTransfer rootFolder="/home/webadmin/docker" accessType="SFTP" host="chat.bbs.media" port="22100" sshConfigId="fcceb1e6-6b9b-44b8-a0df-964e022d46a2" sshConfig="root@chat.bbs.media:22100 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="7f8ef1b5-45ed-4615-bffe-b55047b9689f" name="bunker" url="http://ftp.bbs.media">
+        <fileTransfer accessType="FTPS" host="ftp.bbs.media" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

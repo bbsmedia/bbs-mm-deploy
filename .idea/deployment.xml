@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="chat.bbs.media" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="chat.bbs.media" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false">
+    <option name="confirmBeforeUploading" value="false" />
     <serverData>
+      <paths name="bunker">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mattermost-deploy" local="$PROJECT_DIR$/__docs/_live" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="chat.bbs.media">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/webadmin/docker" local="$PROJECT_DIR$/docker" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$/docker" web="/" />
           </mappings>
           <excludedPaths>
             <excludedPath path="/mattermost/volumes" />
@@ -13,5 +21,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
