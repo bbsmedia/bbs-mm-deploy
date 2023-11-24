@@ -9,9 +9,6 @@ function rotate_backups(){
     then
       echo "No directory:$BACKUP_PATH found. Exiting"
       return 1
-      else
-        # shellcheck disable=SC2164
-        cd "$BACKUP_PATH"
   fi
 
   # if the maximum number of backup has been reached,
@@ -32,11 +29,14 @@ function rotate_backups(){
           mv "$BASE_BACKUP_DIR_NAME$i" "$BASE_BACKUP_DIR_NAME$((i+1))"
      fi
   done
+
   # finally rename the previous current backup
   # as backup1
-  mv "$CURRENT_BACKUP_DIR" "$BASE_BACKUP_DIR_NAME"1
-
-  #cd "$CURRENT_PATH"
+  # echo $( [[ -d "$CURRENT_BACKUP_DIR" ]] && echo "!!!!!!ESTE" || echo )
+  if [[ -d "$CURRENT_BACKUP_DIR" ]]
+    then mv "$CURRENT_BACKUP_DIR" "$BASE_BACKUP_DIR_NAME"1
+    else mkdir -p "$CURRENT_BACKUP_DIR"
+  fi
 }
 
 function create_info(){
@@ -55,6 +55,7 @@ function create_info(){
 
   MM_BACKUP_SIZE=$(du -sh "${BACKUP_PATH}/${CHAT_BACKUP}" | awk '{print $1}')
   DB_BACKUP_SIZE=$(du -sh "${BACKUP_PATH}/${DB_BACKUP}" | awk '{print $1}')
+
   # create info file
   touch "${BACKUP_PATH}/${INFO_FILE}"
 

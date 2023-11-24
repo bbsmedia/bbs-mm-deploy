@@ -49,6 +49,9 @@ if [[ $REPLY =~ ^[cC]$ ]]
   then BACKUP_DIR="${CURRENT_BACKUP_DIR}"
   else BACKUP_DIR="${BASE_BACKUP_DIR_NAME}${REPLY}"
 fi
+echo "Stopping containers..."
+docker stop "$MM_CONTAINER_NAME"
+docker stop "$PG_CONTAINER_NAME"
 
 echo "Cleaning up old Mattermost data ($VOLUMES_MM_PATH)..."
 rm -rf "$VOLUMES_MM_PATH"

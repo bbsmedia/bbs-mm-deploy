@@ -20,8 +20,8 @@ VOLUMES_MM_DIR="mattermost"
 CHAT_BACKUP_DIR="chat_backup"
 CHAT_DATA_DIR="chat_data"
 PG_DATA_DIR="pg_data"
-PG_DUMP_TRANSFER_PATH="/tmp"
-PG_CONTAINER_RESTORE_PATH="/tmp"
+PG_DUMP_TRANSFER_PATH="/tmp/pg_dump"
+PG_CONTAINER_RESTORE_PATH="/tmp/pg_dump"
 
 CURRENT_BACKUP_DIR="current"
 BASE_BACKUP_DIR_NAME="backup"
@@ -45,7 +45,7 @@ PG_CONTAINER_NAME="pg"
 # Postgres container data
 PG_IMAGE_TAG="13-alpine"
 PG_USER="mmUser"
-PG_PASSWORD="23df48(9d_osj)knHGG49*"
+PG_PASSWORD="the_most_secure"
 PG_DB="mattermost"
 
 ## This will be 'mattermost-enterprise-edition' or 'mattermost-team-edition' based on the version of Mattermost you're installing.
@@ -64,7 +64,7 @@ APP_PORT=8065
 
 ## Below one can find necessary settings to spin up the Mattermost container
 MM_SQLSETTINGS_DRIVERNAME="postgres"
-MM_SQLSETTINGS_DATASOURCE="postgres://mmuser:mmuser_password@postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
+MM_SQLSETTINGS_DATASOURCE="postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/mattermost?sslmode=disable&connect_timeout=10"
 
 # **** COMPUTED VARIABLES ****
 # this section should not be changed

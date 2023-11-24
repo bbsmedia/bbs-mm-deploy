@@ -19,9 +19,9 @@ services:
       # timezone inside container
       - TZ="$TZ"
       # necessary Postgres options/variables
-      - POSTGRES_USER="$PG_USER"
-      - POSTGRES_PASSWORD="$PG_PASSWORD"
-      - POSTGRES_DB="$PG_DB"
+      - POSTGRES_USER=$PG_USER
+      - POSTGRES_PASSWORD=$PG_PASSWORD
+      - POSTGRES_DB=$PG_DB
 
   mattermost:
     depends_on:
@@ -51,11 +51,10 @@ services:
       - TZ="${TZ}"
 
       # necessary Mattermost options/variables (see env.example)
-      - MM_SQLSETTINGS_DRIVERNAME="${MM_SQLSETTINGS_DRIVERNAME}"
-      - MM_SQLSETTINGS_DATASOURCE="${MM_SQLSETTINGS_DATASOURCE}"
-
+      - MM_SQLSETTINGS_DRIVERNAME=${MM_SQLSETTINGS_DRIVERNAME}
+      - MM_SQLSETTINGS_DATASOURCE=${MM_SQLSETTINGS_DATASOURCE}
       # necessary for bleve
-      - MM_BLEVESETTINGS_INDEXDIR="${MM_BLEVESETTINGS_INDEXDIR}"
+      - MM_BLEVESETTINGS_INDEXDIR=${MM_BLEVESETTINGS_INDEXDIR}
 
       # additional settings
-      - MM_SERVICESETTINGS_SITEURL="https://${DOMAIN}"
+      - MM_SERVICESETTINGS_SITEURL=https://${DOMAIN}
