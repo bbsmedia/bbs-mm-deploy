@@ -3,6 +3,15 @@
 # source global variables
 source vars.sh
 
+set -e
+
+function exitFn(){
+  MSG=$1
+  E_CODE=$2
+  echo "ERROR: $1"
+  exit $(("$E_CODE")) || 1
+}
+
 # accept a command line arg for the .env file path
 # the default (in no arg is present) is "../.env"
 ENV_PATH=$( [[ -z $1 ]] && echo "../.env" || echo "$1" )
@@ -47,10 +56,18 @@ echo "MM_BLEVESETTINGS_INDEXDIR="
 echo "CHAT_BACKUP_PATH=$CHAT_BACKUP_PATH"
 echo "CHAT_DATA_PATH=$CHAT_DATA_PATH"
 echo "TZ=$TZ"
-) >> ../.env""
+) > "$ENV_PATH"
+
+if ! [[ -f "$ENV_PATH" ]] ; then exitFn "Unable to create $ENV_PATH"; fi
 
 echo "Starting containers..."
 docker-compose \
     --env-file "${DOCKER_MM_PATH}"/.env \
       -f "${DOCKER_MM_PATH}"/docker-compose.yml up -d
+
+echo "Initialization succeeded."
+echo "Please give the containers a few moments to spin up."
+
+trap exitFn ERR
+
 
