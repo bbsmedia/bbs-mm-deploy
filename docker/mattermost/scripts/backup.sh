@@ -87,12 +87,17 @@ DB_BACKUP_SIZE=$(du -sh "${DB_ARCHIVE_PATH}" | awk '{print $1}')
 touch "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${INFO_FILE}" || \
   exitFn "Unable to create the ${INFO_FILE} file"
 
+echo "Do you want to enter a description for the current backup? (Enter for none)"
+read -p "Enter an option: " -n 1 -r
+echo
+
 # populate it with data
 INFO_CONTENT=$(
   echo "# Mattermost backup session"
   echo BACKUP_DATE="$(date +'%A %I:%M%p %d-%m-%Y')"
   echo "MM_BACKUP_SIZE=$MM_BACKUP_SIZE"
   echo "DB_BACKUP_SIZE=$DB_BACKUP_SIZE"
+  if [[ -z "${REPLY}" ]]; then echo "$REPLY";fi
 )
 
 echo "${INFO_CONTENT}">"${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${INFO_FILE}" || \

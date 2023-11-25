@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="chat.bbs.media" id="fcceb1e6-6b9b-44b8-a0df-964e022d46a2" keyPath="$USER_HOME$/.ssh/id_rsa" port="22100" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
