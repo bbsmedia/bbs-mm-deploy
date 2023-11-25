@@ -11,7 +11,7 @@ function exitFn(){
   MSG=$1
   E_CODE=$2
   echo "ERROR: $1"
-  exit "$E_CODE" || 1
+  exit $(("$E_CODE")) || 1
 }
 
 echo "Starting backup..."
@@ -50,12 +50,11 @@ if [[ -d "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}" ]]
     echo "Renaming ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR} to ${CHAT_BACKUP_PATH}/${BASE_BACKUP_DIR_NAME}1"
     mv "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}" "${CHAT_BACKUP_PATH}/${BASE_BACKUP_DIR_NAME}"1 || \
     exitFn "Unable to rename ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR} to ${CHAT_BACKUP_PATH}/${BASE_BACKUP_DIR_NAME}1"
-
-  else
-    echo "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR} does not exist. Creating it"
-    mkdir -p "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}" ||
-    exitFn "Unable to create ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}"
 fi
+
+echo "Creating the current backup dir in: ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}"
+mkdir -p "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}" || \
+  exitFn "Unable to create ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}"
 
 # **** CREATE ACTUAL BACKUPS *****
 # for both database and Mattermost
@@ -64,7 +63,7 @@ CHAT_ARCHIVE_PATH="${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${CHAT_BACKUP_FILE_
 DB_ARCHIVE_PATH="${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${DB_BACKUP_FILE_NAME}"
 
 echo "Creating Mattermost settings and data backup archive..."
-tar cvzf "${CHAT_ARCHIVE_PATH}" "$VOLUMES_MM_PATH" || \
+tar cvzf "${CHAT_ARCHIVE_PATH}"  -C "${VOLUMES_MM_PATH}" . || \
   exitFn "Unable to create ${CHAT_BACKUP_FILE_NAME} in ${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}"
 
 echo "Creating database backup..."
@@ -84,15 +83,13 @@ fi
 MM_BACKUP_SIZE=$(du -sh "${CHAT_ARCHIVE_PATH}" | awk '{print $1}')
 DB_BACKUP_SIZE=$(du -sh "${DB_ARCHIVE_PATH}" | awk '{print $1}')
 
-echo "********************************"
-echo "$MM_BACKUP_SIZE"
-echo "$DB_BACKUP_SIZE"
-echo "********************************"
-
-
 # create info file
 touch "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${INFO_FILE}" || \
   exitFn "Unable to create the ${INFO_FILE} file"
+
+echo "Do you want to enter a description for the current backup? (Enter for none)"
+read -p "Enter an option: " -n 1 -r
+echo
 
 # populate it with data
 INFO_CONTENT=$(
@@ -100,13 +97,18 @@ INFO_CONTENT=$(
   echo BACKUP_DATE="$(date +'%A %I:%M%p %d-%m-%Y')"
   echo "MM_BACKUP_SIZE=$MM_BACKUP_SIZE"
   echo "DB_BACKUP_SIZE=$DB_BACKUP_SIZE"
+  if [[ -z "${REPLY}" ]]; then echo "DESCRIPTION=${REPLY}";fi
 )
 
 echo "${INFO_CONTENT}">"${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${INFO_FILE}" || \
   exitFn "Unable to write into the ${INFO_FILE} file"
 
-echo "Backup summary:"
-cat "${CHAT_BACKUP_PATH}/${INFO_FILE}"
+echo "********* BACKUP SUMMARY: *********"
+cat "${CHAT_BACKUP_PATH}/${CURRENT_BACKUP_DIR}/${INFO_FILE}"
+echo "***********************************"
+
+echo "Restarting Mattermost container..."
+docker start "$MM_CONTAINER_NAME"
 
 trap exitFn ERR
 
